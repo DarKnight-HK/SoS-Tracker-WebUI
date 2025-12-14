@@ -31,7 +31,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile sidebar state
 
-  // --- AUTH ---
+// --- AUTH ---
   useEffect(() => {
     const saved = localStorage.getItem('admin_pass');
     if (saved) {
@@ -41,16 +41,13 @@ export default function Dashboard() {
           setPassword(saved);
           setIsLoggedIn(true);
           refreshData(saved);
-        } else {
-          setCheckingAuth(false);
         }
+        setCheckingAuth(false); 
       });
     } else {
       setCheckingAuth(false);
     }
-  }, []);
-
-  const verifyServerLogin = async (pass: string) => {
+  }, []);  const verifyServerLogin = async (pass: string) => {
     try {
       await axios.post('/api/auth/login', { password: pass });
       return true;
@@ -142,8 +139,14 @@ export default function Dashboard() {
   };
 
   // Prevent flash of login screen while checking localstorage
-  if (checkingAuth) return <div className="h-screen bg-slate-950" />;
-
+if (checkingAuth) return (
+  <div className="h-screen bg-slate-950 flex items-center justify-center">
+    <div className="flex flex-col items-center gap-4">
+      <div className="h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+      <p className="text-slate-400 text-sm animate-pulse">Connecting to Secure Server...</p>
+    </div>
+  </div>
+);
   // --- LOGIN SCREEN ---
   if (!isLoggedIn) {
     return (
