@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛰️ SoS Tracker – Advanced IoT Tracking Platform
 
-## Getting Started
+> A full-stack, real-time GPS tracking solution with **Spy Call** capabilities, indoor **LBS fallback**, and a **secured admin dashboard**.
 
-First, run the development server:
+---
 
+## ✨ Features
+
+- **Real-Time Tracking**  
+  Live GPS positioning visualized on a dark-mode interactive map.
+
+- **Indoor Fallback (LBS)**  
+  Automatically switches to Cell Tower triangulation when GPS is unavailable (e.g., indoors, basements).
+
+- **Spy Call 📞**  
+  Remotely trigger the device to silently call your phone and listen to surroundings.
+
+- **Secure Dashboard**  
+  Password-protected admin console with credentials stored securely in MongoDB.
+
+- **Location History**  
+  Track movement history with timestamps and battery-level logs.
+
+- **Remote Commands**  
+  Send commands wirelessly (force location update, activate mic, etc.).
+
+- **Mobile-First Design**  
+  Fully responsive UI with slide-out sidebar optimized for phones.
+
+---
+
+## 🛠️ Tech Stack
+
+### 💻 Software
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript
+- **Database:** MongoDB Atlas (Mongoose)
+- **Styling:** Tailwind CSS + ShadCN UI
+- **Maps:** Leaflet / React-Leaflet
+- **Deployment:** Vercel
+
+### 🔧 Hardware
+- **Microcontroller:** ESP32 DevKit V1
+- **GSM Module:** SIM800L (2G)
+- **GPS Module:** NEO-6M
+- **Power:** 18650 Li-Ion Battery + Power Bank Module (IP5306)
+
+---
+
+## 🚀 Getting Started (Software)
+
+### 1️⃣ Clone the Repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/YOUR_USERNAME/sos-tracker.git
+cd sos-tracker
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2️⃣ Install Dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3️⃣ Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a file named **.env.local** in the project root:
 
-## Learn More
+```env
+MONGO_URI=mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/sos_db?retryWrites=true&w=majority
+ADMIN_PASSWORD=admin
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 4️⃣ Run Locally
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ☁️ Deployment
 
-## Deploy on Vercel
+Optimized for **Vercel**.  
+Add environment variables and allow `0.0.0.0/0` in MongoDB Atlas Network Access.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📝 License
+
+Educational purposes only.
