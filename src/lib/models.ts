@@ -15,9 +15,9 @@ export interface ICommand extends Document {
   createdAt: Date;
 }
 
-// [NEW] Interface for Settings
 export interface ISettings extends Document {
   guardianNumber: string;
+  adminPassword?: string;
   updatedAt: Date;
 }
 
@@ -36,9 +36,9 @@ const CommandSchema = new Schema<ICommand>({
   createdAt: { type: Date, default: Date.now }
 });
 
-// [NEW] Schema for Settings
 const SettingsSchema = new Schema<ISettings>({
   guardianNumber: { type: String, default: '' },
+  adminPassword: { type: String, default: 'admin' }, // <--- Default Password
   updatedAt: { type: Date, default: Date.now }
 });
 
