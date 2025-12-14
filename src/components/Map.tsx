@@ -3,7 +3,8 @@
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
 
 // --- Fix Leaflet Default Icon ---
 const techIcon = L.divIcon({
@@ -16,7 +17,6 @@ const techIcon = L.divIcon({
   iconAnchor: [12, 12]
 });
 
-// Component to smoothly pan the map when new points arrive
 function MapUpdater({ center }: { center: [number, number] }) {
   const map = useMap();
   useEffect(() => {
@@ -26,11 +26,16 @@ function MapUpdater({ center }: { center: [number, number] }) {
 }
 
 export default function Map({ history }: { history: any[] }) {
-  // Loading State / Empty State
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Wait for client mount to avoid hydration mismatch on theme
+  useEffect(() => setMounted(true), []);
+
   if (!history || history.length === 0) {
     return (
-      <div className="h-full w-full bg-slate-950 flex flex-col items-center justify-center text-slate-500 animate-pulse">
-        <div className="h-12 w-12 border-4 border-blue-900 border-t-blue-500 rounded-full animate-spin mb-4"></div>
+      <div className="h-full w-full bg-background flex flex-col items-center justify-center text-muted-foreground animate-pulse">
+        <div className="h-12 w-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
         <p>Searching for Satellite Signal...</p>
       </div>
     );
@@ -39,24 +44,30 @@ export default function Map({ history }: { history: any[] }) {
   const center: [number, number] = [history[0].lat, history[0].lng];
   const path = history.map(p => [p.lat, p.lng] as [number, number]);
 
+  // Determine Tile Layer based on Theme
+  // Dark: CartoDB Dark Matter | Light: CartoDB Positron (High Readability)
+  const tileUrl = mounted && resolvedTheme === 'light'
+    ? "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+    : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+
+  const pathColor = mounted && resolvedTheme === 'light' ? '#2563eb' : '#3b82f6'; // Darker blue for light mode
+
   return (
-    <MapContainer center={center} zoom={15} className="h-full w-full z-0 bg-slate-950" zoomControl={false}>
-      {/* Dark Matter Map Tiles */}
+    <MapContainer center={center} zoom={15} className="h-full w-full z-0 bg-background" zoomControl={false}>
       <TileLayer 
+        key={tileUrl} // Forces re-render when theme changes
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" 
+        url={tileUrl}
       />
       
       <MapUpdater center={center} />
       
-      {/* The Path Line */}
-      <Polyline positions={path} pathOptions={{ color: '#3b82f6', weight: 4, opacity: 0.6, dashArray: '10, 10' }} />
+      <Polyline positions={path} pathOptions={{ color: pathColor, weight: 4, opacity: 0.8, dashArray: '10, 10' }} />
       
-      {/* The Current Location Marker */}
       <Marker position={center} icon={techIcon}>
         <Popup className="tech-popup">
-          <div className="text-sm font-bold">Target Located</div>
-          <div className="text-xs text-slate-500">
+          <div className="text-sm font-bold text-slate-900 dark:text-slate-100">Target Located</div>
+          <div className="text-xs text-slate-600 dark:text-slate-400">
             Bat: {history[0].battery}% <br/>
             Type: {history[0].type}
           </div>
